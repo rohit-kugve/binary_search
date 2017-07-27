@@ -25,7 +25,7 @@ int compare_char(void *a, void *b)
 }
 
 /* compare_float - compare 2 floating point numbers. Floating point numbers can not be expressed accurately in binary.
- * There will always be rounding errors. So I consider them equal if their diff is less than a fixed "epsilon" value.
+ * There will always be rounding errors. So I consider them equal if their difference is less than a fixed "epsilon" value.
  * This is not the best way to get accuracy, but we are prioritizing consistancy over accuracy, so this will do.
  *
  * Inputs
@@ -48,14 +48,14 @@ int compare_float(void *a, void *b)
     	return -1;            //x < y
 }
 
-/* bin_srch - does binary search iteratively. Not to be called directly, usr wraper function binary_search()
+/* bin_srch - does binary search iteratively. Not to be called directly, use wraper function binary_search()
  * parameters and return same as binary_search()     
  */ 
 static int bin_srch(void *arr, int d_size, int s, int e, void *key, int (*compare_fn)(void*, void*))
 {
     int mid = 0, cmp = 0;
 	while (s <= e)	{
-		mid = (s + e) / 2;
+		mid = (s + e) / 2;								//get middle element
 		cmp = compare_fn(arr + (mid * d_size), key);    //do not use == to compare since it might not work for some datatypes like float    
 		if (cmp == 0)      
         	return mid;                                    //key found in arr[mid]
@@ -68,15 +68,15 @@ static int bin_srch(void *arr, int d_size, int s, int e, void *key, int (*compar
 }
 
 
-/* binary_search - search for key in an array  of any data type using binary search logic. 
+/* binary_search - search for key in an array of any data type using binary search logic. 
  * Array needs to be sorted in non decreasing order
  * Inputs - 
  * @array: pointer to first byte of data array
  * @arr_size: number of bytes in array
  * @data_size: size of each element (in bytes)
  * @key: pointer to key to be searched. It's size is assumed to be same as @data_size
- * @compare_fn: compare function for this data type. This takes 2 pointers to data to be compared,
- * returns 0 if equal, 1 if 1st > 2nd, -1 if 1st < 2nd
+ * @compare_fn: pointer to compare function for this data type. This function takes 2 pointers to data to be compared,
+ * and returns 0 if equal, 1 if 1st > 2nd, -1 if 1st < 2nd
  * 
  * Retuns index of key in array if found(This is NOT byte index), -1 if not found, -2 if error
  */
@@ -110,6 +110,7 @@ int test_float(void)
 {
     int fail = 0;
 	int expected = 0, result = 0;
+	
 	//test odd elements
 	float f1[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22f};
     float key1 = 1.9f;
@@ -119,7 +120,8 @@ int test_float(void)
 	    printf("expected = %d, result = %d\n", expected, result);
 		fail = 1;
 	}    
-    //test even elements
+    
+	//test even elements
     float f2[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22, 2.40};
     float key2 = 0.2f;
 	expected = 0;
@@ -128,7 +130,8 @@ int test_float(void)
 	    printf("expected = %d, result = %d\n", expected, result );
 		fail = 1;
 	}    
-    //test 0 elements
+    
+	//test 0 elements
     float f3[] = {};
     float key3 = 0.2f;
 	expected = -2;
@@ -137,7 +140,8 @@ int test_float(void)
 	    printf("expected = %d, result = %d\n", expected, result );
 		fail = 1;
 	}    
-    //test key not present
+    
+	//test key not present
     float f4[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22, 2.40};
     float key4 = 0.9f;
 	expected = -1;
@@ -146,7 +150,8 @@ int test_float(void)
 	    printf("expected = %d, result = %d\n", expected, result );
 		fail = 1;
 	}    
-    //test small diff numbers
+    
+	//test small diff numbers
     //even though the key is not in array, due to epsilon comparision, it picks index 2 as key.
     float f5[] = {0.20000001f, 0.20000004f, 0.20000006f, 0.20000008f, 2.22, 2.40};
     float key5 = 0.20000005f;
