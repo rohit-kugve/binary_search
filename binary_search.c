@@ -2,22 +2,18 @@
 #include <float.h>
 #include <math.h>
 
-//TODO
+//compare_int - compares 2 integers in normal way 
 int compare_int(void *a, void *b)
 {
-	if(!a){//?
-	}
     int x = *(int*)a;
     int y = *(int*)b;
 
     if (x == y)
         return 0;
-	else if (x > y)
-        return 1;
-	else
-    	return -1;      //x < y
+	return (x > y)? 1: -1;
 }
 
+//compare_char - compares 2 chars  in normal way 
 int compare_char(void *a, void *b)
 {
     char x = *(char*)a;
@@ -25,10 +21,7 @@ int compare_char(void *a, void *b)
 
     if (x == y)
         return 0;
-	else if (x > y)
-        return 1;
-	else 
-    	return -1;      //x < y
+	return (x > y)? 1: -1;
 }
 
 /* compare_float - compare 2 floating point numbers. Floating point numbers can not be expressed accurately in binary.
@@ -55,25 +48,25 @@ int compare_float(void *a, void *b)
     	return -1;            //x < y
 }
 
-
-/* bin_srch - does binary search, not to be called directly, usr wraper function binary_search()
+/* bin_srch - does binary search iteratively. Not to be called directly, usr wraper function binary_search()
  * parameters and return same as binary_search()     
  */ 
 static int bin_srch(void *arr, int d_size, int s, int e, void *key, int (*compare_fn)(void*, void*))
 {
-		//stack overflow ??TODO
     int mid = 0, cmp = 0;
-    if (s > e){
-        return -1;                                    //key not found
-    }
-    mid = (s + e) / 2;                                //get mid point of array
-    cmp = compare_fn(arr + (mid * d_size), key);    //do not use == to compare since it might not work for some datatypes like float
-    if (cmp == 0)      
-        return mid;                                    //key found in arr[mid]
-    if (cmp > 0)                                    
-        return bin_srch(arr, d_size, s, mid - 1, key, compare_fn);    //arr[mid] > key, key is in left half
-    return bin_srch(arr, d_size, mid + 1, e, key, compare_fn);        //arr[mid] < key, key is in right half
+	while (s <= e)	{
+		mid = (s + e) / 2;
+		cmp = compare_fn(arr + (mid * d_size), key);    //do not use == to compare since it might not work for some datatypes like float    
+		if (cmp == 0)      
+        	return mid;                                    //key found in arr[mid]
+ 		else if (cmp > 0)
+			e = mid - 1;			//arr[mid] > key, key is in left half
+		else
+			s = mid + 1;			//arr[mid] < key, key is in right half
+	}
+	return -1;		// key not found		
 }
+
 
 /* binary_search - search for key in an array  of any data type using binary search logic. 
  * Array needs to be sorted in non decreasing order
@@ -90,7 +83,7 @@ static int bin_srch(void *arr, int d_size, int s, int e, void *key, int (*compar
 int binary_search(void *array, int arr_size, int data_size, void *key, int (*compare_fn)(void*, void*))
 {   
     int n = 0;    // no. of elements in array
-    if (array == NULL || arr_size <= 0 || data_size <=0 || key == NULL || compare_fn == NULL){
+    if (array == NULL || arr_size <= 0 || data_size <= 0 || key == NULL || compare_fn == NULL){
         return -2;                            //some sanity checking
     }
     n = (arr_size / data_size); 
@@ -98,62 +91,86 @@ int binary_search(void *array, int arr_size, int data_size, void *key, int (*com
 }
 
 /* test cases and main function */
-//TODO use int ret value
 int test_int(void)
 {
+	int fail = 0;
+	//simple test
     int i_a[] = {0, 4, 8, 9, 22};
     int i_key = 22;
-    printf("expected = 4, result = %d\n", binary_search(i_a, sizeof(i_a), sizeof(int), &i_key, &compare_int));
-	return 0;
-	//if(!bin()){
-	//	//something wrong
-	//}
+	int expected = 4;
+	int result = binary_search(i_a, sizeof(i_a), sizeof(i_key), &i_key, &compare_int); 
+    if (expected != result )	{
+		printf("expected = %d, result = %d\n", expected, result);
+		fail = 1;
+	}
+	return fail;
 }
-
-//void x(bool expect, actual, char *msg){
-//if failutre
-//		print msg and values
-//				exit(1);
-//}
 
 int test_float(void)
 {
-    //test odd elements
-    float f1[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22f};
+    int fail = 0;
+	int expected = 0, result = 0;
+	//test odd elements
+	float f1[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22f};
     float key1 = 1.9f;
-    printf("expected = 3, result = %d\n", binary_search(f1, sizeof(f1), sizeof(float), &key1, &compare_float));    
+	expected = 3;
+	result = binary_search(f1, sizeof(f1), sizeof(key1), &key1, &compare_float);
+	if (expected != result )	{
+	    printf("expected = %d, result = %d\n", expected, result);
+		fail = 1;
+	}    
     //test even elements
     float f2[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22, 2.40};
     float key2 = 0.2f;
-    printf("expected = 0, result = %d\n", binary_search(f2, sizeof(f2), sizeof(float), &key2, &compare_float));    
+	expected = 0;
+ 	result = binary_search(f2, sizeof(f2), sizeof(key2), &key2, &compare_float);
+	if (expected != result )	{
+	    printf("expected = %d, result = %d\n", expected, result );
+		fail = 1;
+	}    
     //test 0 elements
     float f3[] = {};
     float key3 = 0.2f;
-    printf("expected = -2, result = %d\n", binary_search(f3, sizeof(f3), sizeof(float), &key3, &compare_float));
+	expected = -2;
+ 	result = binary_search(f3, sizeof(f3), sizeof(key3), &key3, &compare_float);
+	if (expected != result )	{
+	    printf("expected = %d, result = %d\n", expected, result );
+		fail = 1;
+	}    
     //test key not present
     float f4[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22, 2.40};
     float key4 = 0.9f;
-    printf("expected = -1, result = %d\n", binary_search(f4, sizeof(f4), sizeof(float), &key4, &compare_float));
-	//TODO sizeof(float) _> key4
+	expected = -1;
+ 	result = binary_search(f4, sizeof(f4), sizeof(key4), &key4, &compare_float);
+	if (expected != result )	{
+	    printf("expected = %d, result = %d\n", expected, result );
+		fail = 1;
+	}    
     //test small diff numbers
     //even though the key is not in array, due to epsilon comparision, it picks index 2 as key.
     float f5[] = {0.20000001f, 0.20000004f, 0.20000006f, 0.20000008f, 2.22, 2.40};
     float key5 = 0.20000005f;
-    printf("expected = -1, result = %d\n", binary_search(f5, sizeof(f5), sizeof(float), &key5, &compare_float));
+	expected = -1;
+ 	result = binary_search(f5, sizeof(f5), sizeof(key5), &key5, &compare_float);
+	if (expected != result )	{
+	    printf("expected = %d, result = %d\n", expected, result );
+		fail = 1;
+	}    
     
-    return 0;
+    return fail;
 }
 
 int main(void)
 {
-    test_int();
-    test_float();
+    //intiger tests
+	if (test_int() != 0)
+		printf("int test fail\n");
+	else 
+		printf("int test pass\n");
+    //float tests
+	if (test_float() != 0)
+    	printf("float test fails\n");
+	else 
+		printf("int test pass\n");
     return 0;
 }
-
-
-//README for compliling and runing
-//TODO split into files
-//main.c
-//binary_search.c
-//binary_search_test.c -> main

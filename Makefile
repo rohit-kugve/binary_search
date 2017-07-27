@@ -1,4 +1,4 @@
 default: bin_srch
-	gcc -o bin_srch ./bin_srch.c
+	gcc -Wall -o bin_srch ./binary_search.c
 clean:
 	rm -f ./bin_srch
