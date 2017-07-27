@@ -2,16 +2,20 @@
 #include <float.h>
 #include <math.h>
 
+//TODO
 int compare_int(void *a, void *b)
 {
+	if(!a){//?
+	}
     int x = *(int*)a;
     int y = *(int*)b;
 
     if (x == y)
         return 0;
-    if (x > y)
+	else if (x > y)
         return 1;
-    return -1;      //x < y
+	else
+    	return -1;      //x < y
 }
 
 int compare_char(void *a, void *b)
@@ -21,17 +25,19 @@ int compare_char(void *a, void *b)
 
     if (x == y)
         return 0;
-    if (x > y)
+	else if (x > y)
         return 1;
-    return -1;      //x < y
+	else 
+    	return -1;      //x < y
 }
 
 /* compare_float - compare 2 floating point numbers. Floating point numbers can not be expressed accurately in binary.
  * There will always be rounding errors. So I consider them equal if their diff is less than a fixed "epsilon" value.
- * This is not the best way to get accuracy, but we are aiming for consistancy and not accuracy, so this will do.
- * Input 
+ * This is not the best way to get accuracy, but we are prioritizing consistancy over accuracy, so this will do.
+ *
+ * Inputs
  * @a and @b: pointers to valid floating point values
- * Return 
+ * Returns
  * 0 if *a == *b (within the range of epsilon)
  * 1 if *a > *b
  * -1 if *a < *b 
@@ -41,13 +47,12 @@ int compare_float(void *a, void *b)
     float x = *(float*)a;
     float y = *(float*)b;
 
-    if (fabs(x - y) < FLT_EPSILON){
+    if (fabs(x - y) < FLT_EPSILON)
         return 0;                        //diff is smallar than epsilon so consider them equal
-    }
-    if (x > y){
+	else if (x > y)
         return 1;
-    }
-    return -1;            //x < y
+	else
+    	return -1;            //x < y
 }
 
 
@@ -56,6 +61,7 @@ int compare_float(void *a, void *b)
  */ 
 static int bin_srch(void *arr, int d_size, int s, int e, void *key, int (*compare_fn)(void*, void*))
 {
+		//stack overflow ??TODO
     int mid = 0, cmp = 0;
     if (s > e){
         return -1;                                    //key not found
@@ -92,12 +98,23 @@ int binary_search(void *array, int arr_size, int data_size, void *key, int (*com
 }
 
 /* test cases and main function */
+//TODO use int ret value
 int test_int(void)
 {
     int i_a[] = {0, 4, 8, 9, 22};
     int i_key = 22;
     printf("expected = 4, result = %d\n", binary_search(i_a, sizeof(i_a), sizeof(int), &i_key, &compare_int));
+	return 0;
+	//if(!bin()){
+	//	//something wrong
+	//}
 }
+
+//void x(bool expect, actual, char *msg){
+//if failutre
+//		print msg and values
+//				exit(1);
+//}
 
 int test_float(void)
 {
@@ -117,6 +134,7 @@ int test_float(void)
     float f4[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22, 2.40};
     float key4 = 0.9f;
     printf("expected = -1, result = %d\n", binary_search(f4, sizeof(f4), sizeof(float), &key4, &compare_float));
+	//TODO sizeof(float) _> key4
     //test small diff numbers
     //even though the key is not in array, due to epsilon comparision, it picks index 2 as key.
     float f5[] = {0.20000001f, 0.20000004f, 0.20000006f, 0.20000008f, 2.22, 2.40};
@@ -134,3 +152,8 @@ int main(void)
 }
 
 
+//README for compliling and runing
+//TODO split into files
+//main.c
+//binary_search.c
+//binary_search_test.c -> main
