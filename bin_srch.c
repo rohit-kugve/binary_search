@@ -41,7 +41,7 @@ int compare_float(void *a, void *b)
     float x = *(float*)a;
     float y = *(float*)b;
 
-    if (fabs(x - y) <= FLT_EPSILON){
+    if (fabs(x - y) < FLT_EPSILON){
         return 0;                        //diff is smallar than epsilon so consider them equal
     }
     if (x > y){
