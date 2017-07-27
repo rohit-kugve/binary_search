@@ -40,9 +40,9 @@ int compare_float(void *a, void *b)
 {
     float x = *(float*)a;
     float y = *(float*)b;
+
     if (fabs(x - y) <= FLT_EPSILON){
         return 0;						//diff is smallar than epsilon so consider them equal
-
     }
     if (x > y){
         return 1;
@@ -104,23 +104,19 @@ int test_float(void)
 	//test odd elements
     float f1[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22f};
     float key1 = 1.9f;
-	printf("expected = 3, result = %d\n", binary_search(f1, sizeof(f1), sizeof(float), &key1, &compare_float));
-	
+	printf("expected = 3, result = %d\n", binary_search(f1, sizeof(f1), sizeof(float), &key1, &compare_float));	
 	//test even elements
 	float f2[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22, 2.40};
     float key2 = 0.2f;
 	printf("expected = 0, result = %d\n", binary_search(f2, sizeof(f2), sizeof(float), &key2, &compare_float));	
-
 	//test 0 elements
 	float f3[] = {};
     float key3 = 0.2f;
 	printf("expected = -2, result = %d\n", binary_search(f3, sizeof(f3), sizeof(float), &key3, &compare_float));
-	
 	//test key not present
 	float f4[] = {0.2f, 0.4f, 0.8f, 1.9f, 2.22, 2.40};
     float key4 = 0.9f;
 	printf("expected = -1, result = %d\n", binary_search(f4, sizeof(f4), sizeof(float), &key4, &compare_float));
-	
 	//test small diff numbers
 	//even though the key is not in array, due to epsilon comparision, it picks index 2 as key.
 	float f5[] = {0.20000001f, 0.20000004f, 0.20000006f, 0.20000008f, 2.22, 2.40};
