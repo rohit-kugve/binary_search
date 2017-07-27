@@ -47,7 +47,7 @@ int compare_float(void *a, void *b)
     if (x > y){
         return 1;
     }
-    return -1;      	//x < y
+    return -1;			//x < y
 }
 
 
@@ -58,15 +58,15 @@ static int bin_srch(void *arr, int d_size, int s, int e, void *key, int (*compar
 {
     int mid = 0, cmp = 0;
     if (s > e){
-        return -1;          						//key not found
+        return -1;									//key not found
     }
     mid = (s + e) / 2;								//get mid point of array
     cmp = compare_fn(arr + (mid * d_size), key);	//do not use == to compare since it might not work for some datatypes like float
     if (cmp == 0)      
-        return mid;         						//key found in arr[mid]
-    if (cmp > 0)    								
+        return mid;									//key found in arr[mid]
+    if (cmp > 0)									
         return bin_srch(arr, d_size, s, mid - 1, key, compare_fn);	//arr[mid] > key, key is in left half
-    return bin_srch(arr, d_size, mid + 1, e, key, compare_fn); 		//arr[mid] < key, key is in right half
+    return bin_srch(arr, d_size, mid + 1, e, key, compare_fn);		//arr[mid] < key, key is in right half
 }
 
 /* binary_search - search for key in an array  of any data type using binary search logic. 
